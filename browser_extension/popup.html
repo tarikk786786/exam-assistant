@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Exam Assistant Pro</title>
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151d30;
+      --border: #23314f;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --accent: #818cf8;
+      --success: #34d399;
+      --danger: #f87171;
+    }
+
+    body {
+      width: 440px;
+      min-height: 520px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 0;
+      color: var(--primary);
+    }
+
+    .badge-lock {
+      font-size: 10px;
+      background: #1e1b4b;
+      color: #a5b4fc;
+      border: 1px solid #3730a3;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* Tabs */
+    .tabs-nav {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 7px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 11px;
+      text-align: center;
+    }
+
+    .tab-btn.active {
+      background: #1e3a8a;
+      color: #ffffff;
+      border-color: #3b82f6;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+
+    button.primary-btn {
+      width: 100%;
+      background: #0284c7;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    button.primary-btn:hover { background: #0369a1; }
+
+    button.secondary-btn {
+      width: 100%;
+      background: #1e293b;
+      color: #cbd5e1;
+      border: 1px solid #334155;
+      padding: 7px 12px;
+      border-radius: 5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    button.secondary-btn:hover { background: #334155; }
+
+    input, select {
+      width: 100%;
+      background: #090d16;
+      border: 1px solid #334155;
+      color: var(--text);
+      padding: 6px 8px;
+      border-radius: 4px;
+      box-sizing: border-box;
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .opt-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #090d16;
+      border: 1px solid #23314f;
+      padding: 8px 10px;
+      border-radius: 4px;
+      margin: 4px 0;
+      cursor: pointer;
+    }
+
+    .opt-label.selected {
+      border-color: #38bdf8;
+      background: #082f49;
+    }
+
+    .explanation-box {
+      background: #0c1a2e;
+      border-left: 3px solid var(--accent);
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .status-bar {
+      margin-top: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎓 Exam Assistant Pro</h1>
+    <span class="badge-lock">🛡️ Human-Controlled Mode</span>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs-nav">
+    <div class="tab-btn active" data-tab="tab-question">📖 Question & Verify</div>
+    <div class="tab-btn" data-tab="tab-progress">📊 Progress (0)</div>
+    <div class="tab-btn" data-tab="tab-settings">⚙️ Settings & AI</div>
+  </div>
+
+  <!-- TAB 1: QUESTION & VERIFY -->
+  <div id="tab-question" class="tab-content active">
+    <button id="btnReadPage" class="primary-btn">📥 1. Read Question from Active Screen</button>
+
+    <div class="card" id="qContainer">
+      <div style="color: var(--text-muted); text-align: center; padding: 10px;">
+        Click <b>"Read Question from Active Screen"</b> or highlight any text on the page to analyze.
+      </div>
+    </div>
+
+    <button id="btnAiExplain" class="secondary-btn">🤖 2. Explain & Verify Answer</button>
+
+    <div id="analysisContainer"></div>
+
+    <div style="display: flex; gap: 8px; margin-top: 8px;">
+      <button id="btnSaveLog" class="secondary-btn" style="background:#065f46; color:#a7f3d0; border-color:#047857;">💾 Save to Session Log</button>
+      <button id="btnFlag" class="secondary-btn" style="background:#450a0a; color:#fca5a5; border-color:#7f1d1d;">🚩 Flag Question</button>
+    </div>
+  </div>
+
+  <!-- TAB 2: PROGRESS & AUDIT -->
+  <div id="tab-progress" class="tab-content">
+    <div class="card" style="display:flex; justify-content:space-around; text-align:center;">
+      <div>
+        <div style="font-size:18px; font-weight:bold; color:var(--primary);" id="statTotal">0</div>
+        <div style="font-size:10px; color:var(--text-muted);">Recorded</div>
+      </div>
+      <div>
+        <div style="font-size:18px; font-weight:bold; color:var(--success);" id="statReviewed">0</div>
+        <div style="font-size:10px; color:var(--text-muted);">Answered</div>
+      </div>
+      <div>
+        <div style="font-size:18px; font-weight:bold; color:var(--danger);" id="statFlagged">0</div>
+        <div style="font-size:10px; color:var(--text-muted);">Flagged</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+        <b>Saved Session Questions:</b>
+        <a href="#" id="btnClearLog" style="color:var(--danger); text-decoration:none; font-size:11px;">Clear Log</a>
+      </div>
+      <div id="logList" style="max-height: 240px; overflow-y: auto;">
+        <p style="color:var(--text-muted); font-size:11px;">No questions logged in this session yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: SETTINGS & FREE AI CONFIG -->
+  <div id="tab-settings" class="tab-content">
+    <div class="card">
+      <h4 style="margin: 0 0 6px 0; color: var(--primary);">AI Model Provider</h4>
+      <label style="font-size:11px; color:var(--text-muted);">Provider:</label>
+      <select id="selProvider">
+        <option value="offline">Built-in Academic Engine (Free / Offline / No key)</option>
+        <option value="gemini">Google Gemini Free API</option>
+      </select>
+
+      <div id="keyBox" style="margin-top: 10px; display: none;">
+        <label style="font-size:11px; color:var(--text-muted);">Gemini Free API Key:</label>
+        <input type="password" id="txtApiKey" placeholder="AIzaSy... (Get free at aistudio.google.com)" />
+        <p style="font-size:10px; color:var(--text-muted); margin-top:4px;">
+          Key is stored only in your local Chrome browser storage (`chrome.storage.local`).
+        </p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin: 0 0 6px 0;">Student Portal Settings</h4>
+      <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Default Student ID: <b>SRU202300876314</b></div>
+      <div style="font-size:11px; color:var(--text-muted);">Portal: <code>13.228.179.22</code></div>
+    </div>
+  </div>
+
+  <div class="status-bar" id="statusMessage">Ready</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

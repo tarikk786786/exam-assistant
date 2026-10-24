@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "AI Exam Assistant Pro — Verification & Study Tool",
+  "version": "2.0.0",
+  "description": "Comprehensive browser assistant for reading questions, verifying answers, explaining concepts, and tracking study sessions safely.",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "AI Exam Assistant Pro"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

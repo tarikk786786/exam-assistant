@@ -1,0 +1,21 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Databases & local user state
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# OS metadata
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
